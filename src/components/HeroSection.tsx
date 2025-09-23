@@ -14,6 +14,17 @@ const HeroSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone number format before submitting
+    if (!isValidPhone(formData.phone)) {
+      toast({
+        title: "Número de telefone inválido",
+        description: "Por favor, insira um número no formato: (99) 9999-9999 ou (99) 9 9999-9999",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     // Format phone number for WhatsApp (remove formatting and add +55)
@@ -59,11 +70,29 @@ const HeroSection = () => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
     
-    // Apply Brazilian phone mask
-    if (digits.length <= 11) {
-      return digits.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    // Limit to maximum 11 digits (DDD + 9 digits)
+    const limitedDigits = digits.slice(0, 11);
+    
+    // Apply Brazilian phone mask based on length
+    if (limitedDigits.length <= 2) {
+      return limitedDigits;
+    } else if (limitedDigits.length <= 3) {
+      return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2)}`;
+    } else if (limitedDigits.length <= 7) {
+      return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2)}`;
+    } else if (limitedDigits.length <= 10) {
+      // Format for 8-digit numbers: (11) 7537-9719
+      return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2, 6)}-${limitedDigits.slice(6)}`;
+    } else {
+      // Format for 9-digit numbers: (11) 9 7537-9719
+      return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2, 3)} ${limitedDigits.slice(3, 7)}-${limitedDigits.slice(7)}`;
     }
-    return value;
+  };
+
+  const isValidPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, '');
+    // Accept 10 digits (DDD + 8 digits) or 11 digits (DDD + 9 digits)
+    return digits.length === 10 || digits.length === 11;
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,19 +163,33 @@ const HeroSection = () => {
 
             <div>
               <Label htmlFor="phone" className="sr-only">WhatsApp</Label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-border bg-muted text-muted-foreground text-sm">
-                  BR +55
-                </span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="WhatsApp"
-                  value={formData.phone}
-                  onChange={handlePhoneChange}
-                  className="input-form w-full text-lg rounded-l-none"
-                  required
-                />
+              <div className="space-y-2">
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-border bg-muted text-muted-foreground text-sm">
+                    BR +55
+                  </span>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="WhatsApp - (99) 9999-9999"
+                    value={formData.phone}
+                    onChange={handlePhoneChange}
+                    className={`input-form w-full text-lg rounded-l-none ${
+                      formData.phone && !isValidPhone(formData.phone) 
+                        ? 'border-red-500 focus:border-red-500' 
+                        : ''
+                    }`}
+                    required
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-left">
+                  Formatos aceitos: <span className="text-accent">(99) 9999-9999</span> ou <span className="text-accent">(99) 9 9999-9999</span>
+                </p>
+                {formData.phone && !isValidPhone(formData.phone) && (
+                  <p className="text-xs text-red-500 text-left">
+                    Número inválido. Use o formato correto.
+                  </p>
+                )}
               </div>
             </div>
 
