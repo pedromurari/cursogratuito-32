@@ -34,7 +34,7 @@ const HeroSection = () => {
         whatsapp: whatsappNumber,
       });
 
-      await fetch('https://script.google.com/macros/s/AKfycbxUns_tDvzUqp820ZmBFDij_fBHqfcW7LQL1OCn48nrWknSmnCIFauesejuV-uWMjnZ/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbyeWl0rwa6CwcUacKgsJwbnqocnlxNQY3n3LonibAmyQEBpKvni2RZ3E1V5XoKIM7m6/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -49,7 +49,7 @@ const HeroSection = () => {
 
     // Always redirect to the thank you page after 2 seconds
     setTimeout(() => {
-      window.location.href = 'https://obrigado25.institutodespertamente.site';
+      window.location.href = 'https://obrigado26.institutodespertamente.site';
     }, 2000);
 
     setIsSubmitting(false);
@@ -96,7 +96,7 @@ const HeroSection = () => {
         {/* Event details */}
         <div className="mb-12 p-6 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50">
           <p className="text-lg md:text-xl font-semibold text-foreground">
-            DIA 09, 10 E 11 DE SETEMBRO
+            DIA 07, 08 E 09 DE OUTUBRO
           </p>
           <p className="text-md md:text-lg text-accent font-medium">
             AO VIVO NO YOUTUBE ÀS 20 HORAS
