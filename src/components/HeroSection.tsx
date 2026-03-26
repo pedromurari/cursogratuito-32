@@ -45,7 +45,7 @@ const HeroSection = () => {
         whatsapp: whatsappNumber,
       });
 
-      await fetch('https://script.google.com/macros/s/AKfycbyeWl0rwa6CwcUacKgsJwbnqocnlxNQY3n3LonibAmyQEBpKvni2RZ3E1V5XoKIM7m6/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbx5eyVYCsCyaBgWUb6P67lC_aJ7nB9-EvkhsBleo6KFiA_yKVqCFnv8Hbh3hV0vURDR2A/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -60,7 +60,7 @@ const HeroSection = () => {
 
     // Always redirect to the thank you page after 2 seconds
     setTimeout(() => {
-      window.location.href = 'https://obrigado26.institutodespertamente.site';
+      window.location.href = 'https://obrigado31.institutodespertamente.site/';
     }, 2000);
 
     setIsSubmitting(false);
@@ -68,7 +68,12 @@ const HeroSection = () => {
 
   const formatPhone = (value: string) => {
     // Remove all non-digits
-    const digits = value.replace(/\D/g, '');
+    let digits = value.replace(/\D/g, '');
+    
+    // Prevent +55 duplicated DDI: If user pastes +55 and length > 11, strip it.
+    if (digits.startsWith('55') && digits.length > 11) {
+      digits = digits.slice(2);
+    }
     
     // Limit to maximum 11 digits (DDD + 9 digits)
     const limitedDigits = digits.slice(0, 11);
@@ -124,8 +129,11 @@ const HeroSection = () => {
 
         {/* Event details */}
         <div className="mb-12 p-6 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50">
+          <p className="text-sm md:text-base font-bold text-primary mb-2 tracking-widest">
+            TURMA #31
+          </p>
           <p className="text-lg md:text-xl font-semibold text-foreground">
-            DIA 07, 08 E 09 DE OUTUBRO
+            DIAS 14, 15 E 16 DE ABRIL
           </p>
           <p className="text-md md:text-lg text-accent font-medium">
             AO VIVO NO YOUTUBE ÀS 20 HORAS
