@@ -45,7 +45,7 @@ const HeroSection = () => {
         whatsapp: whatsappNumber,
       });
 
-      await fetch('https://script.google.com/macros/s/AKfycbx5eyVYCsCyaBgWUb6P67lC_aJ7nB9-EvkhsBleo6KFiA_yKVqCFnv8Hbh3hV0vURDR2A/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: {
