@@ -37,24 +37,18 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
-    // Submit to Google Sheets (avoid CORS using URL-encoded + no-cors)
+    // Submit to Google Sheets
     try {
-      const payload = new URLSearchParams({
-        nome: formData.name,
-        email: formData.email,
-        whatsapp: whatsappNumber,
-      });
+      const formPayload = new URLSearchParams();
+      formPayload.append('nome', formData.name);
+      formPayload.append('email', formData.email);
+      formPayload.append('whatsapp', whatsappNumber);
 
-      await fetch('https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec', {
         method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        },
-        body: payload.toString(),
+        body: formPayload,
       });
     } catch (error) {
-      // Silently log the error but don't show it to the user
       console.log('Google Sheets submission failed:', error);
     }
 
