@@ -37,17 +37,40 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
-    // Submit to Google Sheets
+    // Submit to Google Sheets via hidden iframe (bypasses CORS/redirect issues)
     try {
-      const formPayload = new URLSearchParams();
-      formPayload.append('nome', formData.name);
-      formPayload.append('email', formData.email);
-      formPayload.append('whatsapp', whatsappNumber);
+      const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec';
 
-      fetch('https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec', {
-        method: 'POST',
-        body: formPayload,
+      const iframe = document.createElement('iframe');
+      iframe.name = 'hidden-sheets-submit';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = SHEETS_URL;
+      form.target = 'hidden-sheets-submit';
+
+      const fields: Record<string, string> = {
+        nome: formData.name,
+        email: formData.email,
+        whatsapp: whatsappNumber,
+      };
+      Object.entries(fields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
       });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(() => {
+        document.body.removeChild(form);
+        document.body.removeChild(iframe);
+      }, 3000);
     } catch (error) {
       console.log('Google Sheets submission failed:', error);
     }
