@@ -37,6 +37,11 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
+    // Disparar evento Lead para o Meta Pixel
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'Lead');
+    }
+
     // Submit to Google Sheets via fetch (more robust than iframe)
     try {
       const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec';
