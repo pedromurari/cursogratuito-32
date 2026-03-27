@@ -37,42 +37,27 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
-    // Submit to Google Sheets via hidden iframe (bypasses CORS/redirect issues)
+    // Submit to Google Sheets via fetch (more robust than iframe)
     try {
       const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec';
 
-      const iframe = document.createElement('iframe');
-      iframe.name = 'hidden-sheets-submit';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      const params = new URLSearchParams();
+      params.append('nome', formData.name);
+      params.append('email', formData.email);
+      params.append('whatsapp', whatsappNumber);
 
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = SHEETS_URL;
-      form.target = 'hidden-sheets-submit';
-
-      const fields: Record<string, string> = {
-        nome: formData.name,
-        email: formData.email,
-        whatsapp: whatsappNumber,
-      };
-      Object.entries(fields).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+      // We use no-cors because Google Script Web Apps don't return CORS headers for simple POSTs
+      // and keepalive to ensure the request finishes even if the page redirects
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        body: params,
+        mode: 'no-cors',
+        keepalive: true,
       });
-
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(() => {
-        document.body.removeChild(form);
-        document.body.removeChild(iframe);
-      }, 3000);
+      
+      console.log('Google Sheets submission initiated');
     } catch (error) {
-      console.log('Google Sheets submission failed:', error);
+      console.error('Google Sheets submission setup failed:', error);
     }
 
     // Always redirect to the thank you page after 2 seconds
