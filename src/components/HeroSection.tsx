@@ -37,10 +37,24 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
-    // Disparar evento Lead para o Meta Pixel
+    // Disparar evento Lead para o Meta Pixel (browser-side)
     if (typeof window !== 'undefined' && (window as any).fbq) {
       (window as any).fbq('track', 'Lead');
     }
+
+    // Disparar evento Lead via Conversions API (server-side — ignora AdBlockers)
+    fetch('/api/meta-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventName: 'Lead',
+        email: formData.email,
+        phone: whatsappNumber,
+        name: formData.name,
+        sourceUrl: window.location.href,
+      }),
+      keepalive: true,
+    }).catch((err) => console.error('Erro ao enviar CAPI:', err));
 
     // Submit to Google Sheets via fetch (more robust than iframe)
     try {
