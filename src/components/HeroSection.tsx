@@ -37,9 +37,14 @@ const HeroSection = () => {
       description: "Você será redirecionado em instantes...",
     });
 
+    // Gerar um ID de evento único para desduplicação (Pixel + CAPI)
+    const eventId = `lead_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const testCode = urlParams.get('testCode');
+
     // Disparar evento Lead para o Meta Pixel (browser-side)
     if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'Lead');
+      (window as any).fbq('track', 'Lead', {}, { eventID: eventId });
     }
 
     // Disparar evento Lead via Conversions API (server-side — ignora AdBlockers)
@@ -52,6 +57,8 @@ const HeroSection = () => {
         phone: whatsappNumber,
         name: formData.name,
         sourceUrl: window.location.href,
+        eventId: eventId,
+        testCode: testCode,
       }),
       keepalive: true,
     }).catch((err) => console.error('Erro ao enviar CAPI:', err));

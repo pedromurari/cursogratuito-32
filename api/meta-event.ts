@@ -28,7 +28,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   try {
     const body = await req.json();
-    const { eventName, email, phone, name, sourceUrl } = body;
+    const { eventName, email, phone, name, sourceUrl, testCode, eventId } = body;
 
     // Hash dos dados pessoais (exigido pela Meta para privacidade)
     const hashData = async (value: string): Promise<string> => {
@@ -56,8 +56,10 @@ export default async function handler(req: Request): Promise<Response> {
           action_source: 'website',
           event_source_url: sourceUrl || 'https://gratuito-31.institutodespertamente.site',
           user_data: userData,
+          event_id: eventId,
         },
       ],
+      ...(testCode ? { test_event_code: testCode } : {}),
     };
 
     const metaResponse = await fetch(
