@@ -15,6 +15,16 @@ const HeroSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate email format
+    if (!isValidEmail(formData.email)) {
+      toast({
+        title: "E-mail inválido",
+        description: "Por favor, insira um e-mail válido (exemplo: usuario@dominio.com)",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Validate phone number format before submitting
     if (!isValidPhone(formData.phone)) {
       toast({
@@ -128,6 +138,11 @@ const HeroSection = () => {
     return digits.length === 10 || digits.length === 11;
   };
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhone(e.target.value);
     setFormData({ ...formData, phone: formatted });
@@ -192,9 +207,18 @@ const HeroSection = () => {
                 placeholder="Insira seu melhor e-mail"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="input-form w-full text-lg"
+                className={`input-form w-full text-lg ${
+                  formData.email && !isValidEmail(formData.email) 
+                    ? 'border-red-500 focus:border-red-500' 
+                    : ''
+                }`}
                 required
               />
+              {formData.email && !isValidEmail(formData.email) && (
+                <p className="text-xs text-red-500 text-left mt-2">
+                  Por favor, insira um e-mail com formato válido (ex: @dominio.com).
+                </p>
+              )}
             </div>
 
             <div>
