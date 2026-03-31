@@ -11,15 +11,19 @@ const HeroSection = () => {
     phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate email format
-    if (!isValidEmail(formData.email)) {
+    // Trim inputs for clean data and better comparison
+    const trimmedEmail = formData.email.trim();
+    const trimmedName = formData.name.trim();
+
+    // Validate email format and check if it's identical to name (common autofill error)
+    if (!isValidEmail(trimmedEmail, trimmedName)) {
       toast({
-        title: "E-mail inválido",
-        description: "Por favor, insira um e-mail válido (exemplo: usuario@dominio.com)",
+        title: "E-mail ou nome inválido",
+        description: "Por favor, insira um e-mail válido que não seja igual ao seu nome.",
         variant: "destructive",
       });
       return;
@@ -63,9 +67,9 @@ const HeroSection = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         eventName: 'Lead',
-        email: formData.email,
+        email: trimmedEmail,
         phone: whatsappNumber,
-        name: formData.name,
+        name: trimmedName,
         sourceUrl: window.location.href,
         eventId: eventId,
         testCode: testCode,
@@ -78,8 +82,8 @@ const HeroSection = () => {
       const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec';
 
       const params = new URLSearchParams();
-      params.append('nome', formData.name);
-      params.append('email', formData.email);
+      params.append('nome', trimmedName);
+      params.append('email', trimmedEmail);
       params.append('whatsapp', whatsappNumber);
 
       // We use no-cors because Google Script Web Apps don't return CORS headers for simple POSTs
@@ -96,12 +100,11 @@ const HeroSection = () => {
       console.error('Google Sheets submission setup failed:', error);
     }
 
-    // Always redirect to the thank you page after 2 seconds
+    // NEVER set setIsSubmitting(false) here to permanently lock the button until redirect
+    // Use window.onbeforeunload to prevent user from easy double clicks during lag
     setTimeout(() => {
       window.location.href = 'https://obrigado31.institutodespertamente.site/';
     }, 2000);
-
-    setIsSubmitting(false);
   };
 
   const formatPhone = (value: string) => {
@@ -138,9 +141,15 @@ const HeroSection = () => {
     return digits.length === 10 || digits.length === 11;
   };
 
-  const isValidEmail = (email: string) => {
+  const isValidEmail = (email: string, name: string) => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedName = name.trim().toLowerCase();
+    
+    // Safety check: common error where name is filled in email field
+    if (trimmedName && trimmedEmail === trimmedName) return false;
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,15 +217,15 @@ const HeroSection = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className={`input-form w-full text-lg ${
-                  formData.email && !isValidEmail(formData.email) 
+                  formData.email && !isValidEmail(formData.email, formData.name) 
                     ? 'border-red-500 focus:border-red-500' 
                     : ''
                 }`}
                 required
               />
-              {formData.email && !isValidEmail(formData.email) && (
+              {formData.email && !isValidEmail(formData.email, formData.name) && (
                 <p className="text-xs text-red-500 text-left mt-2">
-                  Por favor, insira um e-mail com formato válido (ex: @dominio.com).
+                  Por favor, insira um e-mail com formato válido (ex: @dominio.com) e diferente do seu nome.
                 </p>
               )}
             </div>
