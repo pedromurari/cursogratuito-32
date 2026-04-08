@@ -75,6 +75,7 @@ const HeroSection = () => {
         testCode: testCode,
       }),
       keepalive: true,
+      credentials: 'include',
     }).catch((err) => console.error('Erro ao enviar CAPI:', err));
 
     // Submit to Google Sheets via fetch (more robust than iframe)

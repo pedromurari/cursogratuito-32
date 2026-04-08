@@ -48,6 +48,19 @@ export default async function handler(req: Request): Promise<Response> {
       if (parts.length > 1) userData['ln'] = await hashData(parts[parts.length - 1]);
     }
 
+    // Capturar IP e User Agent para aumentar o Match Quality (NÃO devem ser hasheados)
+    const clientIp = req.headers.get('x-real-ip') || req.headers.get('x-forwarded-for');
+    const userAgent = req.headers.get('user-agent');
+    if (clientIp) userData['client_ip_address'] = clientIp.split(',')[0].trim();
+    if (userAgent) userData['client_user_agent'] = userAgent;
+
+    // Capturar cookies fbp e fbc (se disponíveis)
+    const cookieHeader = req.headers.get('cookie') || '';
+    const fbp = cookieHeader.split(';').find(c => c.trim().startsWith('_fbp='))?.split('=')[1];
+    const fbc = cookieHeader.split(';').find(c => c.trim().startsWith('_fbc='))?.split('=')[1];
+    if (fbp) userData['fbp'] = fbp.trim();
+    if (fbc) userData['fbc'] = fbc.trim();
+
     const eventPayload = {
       data: [
         {
