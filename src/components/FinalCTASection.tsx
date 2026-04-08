@@ -3,7 +3,9 @@ import { Clock, Users, Gift } from 'lucide-react';
 
 const FinalCTASection = () => {
   const handleCTAClick = () => {
-    // Scroll to top form
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

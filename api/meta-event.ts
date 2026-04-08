@@ -6,7 +6,7 @@ export const config = {
 };
 
 const META_PIXEL_ID = '1472969447740954';
-const CAPI_URL = `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events`;
+const CAPI_URL = `https://graph.facebook.com/v22.0/${META_PIXEL_ID}/events`;
 
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') {

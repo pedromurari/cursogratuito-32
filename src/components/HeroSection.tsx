@@ -56,8 +56,17 @@ const HeroSection = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const testCode = urlParams.get('testCode');
 
-    // Disparar evento Lead para o Meta Pixel (browser-side)
+    // Disparar evento Lead para o Meta Pixel (browser-side) com Advanced Matching
     if (typeof window !== 'undefined' && (window as any).fbq) {
+      const nameParts = trimmedName.split(' ');
+      const advancedMatching: Record<string, string> = {
+        em: trimmedEmail,
+        ph: `55${cleanPhone}`,
+        fn: nameParts[0],
+      };
+      if (nameParts.length > 1) advancedMatching['ln'] = nameParts[nameParts.length - 1];
+      // Atualiza o Advanced Matching no Pixel antes de disparar o evento
+      (window as any).fbq('init', '1472969447740954', advancedMatching);
       (window as any).fbq('track', 'Lead', {}, { eventID: eventId });
     }
 
@@ -75,7 +84,6 @@ const HeroSection = () => {
         testCode: testCode,
       }),
       keepalive: true,
-      credentials: 'include',
     }).catch((err) => console.error('Erro ao enviar CAPI:', err));
 
     // Submit to Google Sheets via fetch (more robust than iframe)
