@@ -67,7 +67,7 @@ const HeroSection = () => {
       if (nameParts.length > 1) advancedMatching['ln'] = nameParts[nameParts.length - 1];
       // Atualiza o Advanced Matching no Pixel antes de disparar o evento
       (window as any).fbq('init', '1472969447740954', advancedMatching);
-      (window as any).fbq('track', 'Lead', {}, { eventID: eventId });
+      (window as any).fbq('track', 'Lead', { value: 0, currency: 'BRL' }, { eventID: eventId });
     }
 
     // Disparar evento Lead via Conversions API (server-side — ignora AdBlockers)

@@ -70,6 +70,10 @@ export default async function handler(req: Request): Promise<Response> {
           event_source_url: sourceUrl || 'https://gratuito-31.institutodespertamente.site',
           user_data: userData,
           event_id: eventId,
+          custom_data: {
+            value: 0,
+            currency: 'BRL',
+          },
         },
       ],
       ...(testCode ? { test_event_code: testCode } : {}),
