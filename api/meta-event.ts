@@ -67,7 +67,7 @@ export default async function handler(req: Request): Promise<Response> {
           event_name: eventName || 'Lead',
           event_time: Math.floor(Date.now() / 1000),
           action_source: 'website',
-          event_source_url: sourceUrl || 'https://gratuito-31.institutodespertamente.site',
+          event_source_url: sourceUrl || 'https://gratuito-32.institutodespertamente.site',
           user_data: userData,
           event_id: eventId,
           custom_data: {

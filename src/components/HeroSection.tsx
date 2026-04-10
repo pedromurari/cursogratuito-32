@@ -88,7 +88,7 @@ const HeroSection = () => {
 
     // Submit to Google Sheets via fetch (more robust than iframe)
     try {
-      const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx9r60iZK31nvvfD-oUQPyu0asTYdCQJcRZ-qjomNV8dXs3CfG73DhSLDnla5J1R_dD4A/exec';
+      const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw516xuLMnc6yg8crEFZAJiH0NO8SkXEK2IsxJudfyM3_i9ZRsJuLxxbPipt6ckM88dhw/exec';
 
       const params = new URLSearchParams();
       params.append('nome', trimmedName);
@@ -112,7 +112,7 @@ const HeroSection = () => {
     // NEVER set setIsSubmitting(false) here to permanently lock the button until redirect
     // Use window.onbeforeunload to prevent user from easy double clicks during lag
     setTimeout(() => {
-      window.location.href = 'https://obrigado31.institutodespertamente.site/';
+      window.location.href = 'https://obrigado32.institutodespertamente.site/';
     }, 2000);
   };
 
@@ -191,10 +191,10 @@ const HeroSection = () => {
         {/* Event details */}
         <div className="mb-12 p-6 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50">
           <p className="text-sm md:text-base font-bold text-primary mb-2 tracking-widest">
-            TURMA #31
+            TURMA #32
           </p>
           <p className="text-lg md:text-xl font-semibold text-foreground">
-            DIAS 14, 15 E 16 DE ABRIL
+            DIAS 05, 06 E 07 DE MAIO
           </p>
           <p className="text-md md:text-lg text-accent font-medium">
             AO VIVO NO YOUTUBE ÀS 20 HORAS
