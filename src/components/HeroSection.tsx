@@ -1,8 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const;
+type UtmKey = typeof UTM_KEYS[number];
+
+const captureUtms = (): Record<UtmKey, string> => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const result = {} as Record<UtmKey, string>;
+  UTM_KEYS.forEach((key) => {
+    const fromUrl = urlParams.get(key);
+    if (fromUrl) {
+      sessionStorage.setItem(key, fromUrl);
+      result[key] = fromUrl;
+    } else {
+      result[key] = sessionStorage.getItem(key) ?? '';
+    }
+  });
+  return result;
+};
 
 const HeroSection = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +29,13 @@ const HeroSection = () => {
     phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [utms, setUtms] = useState<Record<UtmKey, string>>({
+    utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '', utm_term: ''
+  });
+
+  useEffect(() => {
+    setUtms(captureUtms());
+  }, []);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,6 +119,7 @@ const HeroSection = () => {
       params.append('nome', trimmedName);
       params.append('email', trimmedEmail);
       params.append('whatsapp', whatsappNumber);
+      UTM_KEYS.forEach((key) => params.append(key, utms[key]));
 
       // We use no-cors because Google Script Web Apps don't return CORS headers for simple POSTs
       // and keepalive to ensure the request finishes even if the page redirects
